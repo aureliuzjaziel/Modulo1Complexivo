@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Librería - Sistema de Gestión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#"> Sistema de Biblioteca</a>
+        <div class="d-flex align-items-center">
+            <span class="text-white me-3" th:text="'Usuario: ' + ${#authentication.name}"></span>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3">Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
+        <div>
+            <h2 class="h4 mb-0 text-secondary fw-semibold">Inventario General de Libros</h2>
+        </div>
+        <a th:href="@{/libros/nuevo}" class="btn btn-primary rounded-pill px-4 shadow-sm">+ Nuevo Libro</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-secondary text-uppercase" style="font-size: 0.85rem;">
+                <tr>
+                    <th class="ps-3" style="width: 80px;">ID</th>
+                    <th>Título de la Obra</th>
+                    <th>Escritor / Autor (1:N)</th>
+                    <th>Precio Comercial</th>
+                    <th class="text-center" style="width: 180px;">Acciones Administrativas</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="l : ${libros}">
+                    <td class="ps-3 fw-bold text-muted" th:text="${l.id}"></td>
+                    <td class="fw-semibold text-dark" th:text="${l.titulo}"></td>
+                    <td>
+                        <span class="badge bg-info text-dark px-3 py-2 rounded-pill fw-medium"
+                              th:text="${l.autor != null ? l.autor.nombre : 'Sin Autor'}"></span>
+                    </td>
+                    <td class="fw-bold text-success" th:text="'$ ' + ${#numbers.formatDecimal(l.precio, 1, 2)}"></td>
+                    <td class="text-center">
+                        <div class="btn-group gap-1">
+                            <a th:href="@{/libros/editar/{id}(id=${l.id})}" class="btn btn-warning btn-sm rounded px-3">Editar</a>
+                            <a th:href="@{/libros/eliminar/{id}(id=${l.id})}" class="btn btn-danger btn-sm rounded px-3"
+                               onclick="return confirm('¿Seguro que deseas dar de baja este libro?')">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(libros)}">
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <p class="mb-0 fs-5">No existen registros en el sistema.</p>
+                        <small>Utiliza el botón superior para agregar tu primer ejemplar.</small>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
